@@ -59,19 +59,7 @@ func TestSecurityGroups(t *testing.T) {
 	require.NoError(err)
 
 	// validate nexctl user get-current returns a user
-	commandOut, err := helper.runCommand(nexctl,
-		"--username", username, "--password", password,
-		"--output", "json",
-		"user", "get-current",
-	)
-	require.NoErrorf(err, "nexctl security-groups list error: %v\n", err)
-	var user models.User
-	err = json.Unmarshal([]byte(commandOut), &user)
-	require.NoErrorf(err, "nexctl Security Groups unmarshal error: %v\n", err)
-
-	require.NotEmpty(user)
-	require.NotEmpty(user.ID)
-	require.NotEmpty(user.UserName)
+	_ = helper.NexctlUserGetCurrent(username, password)
 
 	// validate list devices and register IDs and IPs
 	allDevices, err := helper.runCommand(nexctl,
@@ -344,6 +332,22 @@ func TestSecurityGroups(t *testing.T) {
 	require.Empty(connectResults)
 }
 
+func (helper *Helper) NexctlUserGetCurrent(username string, password string) models.User {
+	commandOut, err := helper.runCommand(nexctl,
+		"--username", username, "--password", password,
+		"--output", "json",
+		"user", "get-current",
+	)
+	helper.require.NoErrorf(err, "nexctl user get-current error: %v\n", err)
+	var user models.User
+	err = json.Unmarshal([]byte(commandOut), &user)
+	helper.require.NoErrorf(err, "nexctl user get-current unmarshal error: %v\n", err)
+	helper.require.NotEmpty(user)
+	helper.require.NotEmpty(user.ID)
+	helper.require.NotEmpty(user.UserName)
+	return user
+}
+
 // TestSecurityGroupsExtended is a continuation of TestSecurityGroups() tests in order
 // to continue testing the various combinations in parallel to reduce e2e run time
 func TestSecurityGroupsExtended(t *testing.T) {
@@ -395,22 +399,37 @@ func TestSecurityGroupsExtended(t *testing.T) {
 		deviceMap[device.Hostname] = device
 	}
 	require.Equal(len(deviceMap), 2)
-	secGroupID := deviceMap[node1Hostname].SecurityGroupId.String()
-	require.Equal(secGroupID, deviceMap[node2Hostname].SecurityGroupId.String())
+
+	user := helper.NexctlUserGetCurrent(username, password)
+	orgID := user.ID
+
+	commandOut, err := helper.runCommand(nexctl,
+		"--username", username, "--password", password,
+		"--output", "json",
+		"security-group", "create",
+		"--name", "test-group",
+		"--organization-id", orgID.String(),
+	)
+	require.NoErrorf(err, "nexctl security-group create error: %v\n", err)
+	var securityGroup models.SecurityGroup
+	err = json.Unmarshal([]byte(commandOut), &securityGroup)
+	require.NoErrorf(err, "nexctl security-group create Unmarshal error: %v\n", err)
+
+	secGroupID := securityGroup.ID.String()
 	helper.Logf("Security group ID: %s", secGroupID)
 
-	currentUser, err := helper.runCommand(nexctl,
-		"--username", username,
-		"--password", password,
-		"--output", "json-raw",
-		"user", "get-current",
-	)
-	require.NoErrorf(err, "nexctl user get-current error: %v\n", err)
-	var user models.User
-	err = json.Unmarshal([]byte(currentUser), &user)
-	require.NoErrorf(err, "nexctl ser get-current Unmarshal error: %v\n", err)
-
-	orgID := user.ID
+	// update the device to use the new security group...
+	for _, d := range []models.Device{deviceMap[node1Hostname], deviceMap[node2Hostname]} {
+		_, err := helper.runCommand(nexctl,
+			"--username", username, "--password", password,
+			"--output", "json",
+			"device", "update",
+			"--device-id", d.ID.String(),
+			"--security-group-id", securityGroup.ID.String(),
+		)
+		require.NoErrorf(err, "nexctl device update error: %v\n", err)
+		d.SecurityGroupId = securityGroup.ID
+	}
 
 	// register the v4 and v6 addresses for both devices
 	node1IPv4 := deviceMap[node1Hostname].IPv4TunnelIPs[0].Address

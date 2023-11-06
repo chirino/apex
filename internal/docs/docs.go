@@ -3112,6 +3112,9 @@ const docTemplate = `{
                 "revision": {
                     "type": "integer"
                 },
+                "security_group_id": {
+                    "type": "string"
+                },
                 "symmetric_nat": {
                     "type": "boolean"
                 },

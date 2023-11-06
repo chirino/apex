@@ -473,10 +473,18 @@ func (api *API) UpdateSecurityGroup(c *gin.Context) {
 			return errSecurityGroupNotFound
 		}
 
-		securityGroup.GroupName = request.GroupName
-		securityGroup.GroupDescription = request.GroupDescription
-		securityGroup.InboundRules = request.InboundRules
-		securityGroup.OutboundRules = request.OutboundRules
+		if request.GroupName != nil {
+			securityGroup.GroupName = *request.GroupName
+		}
+		if request.GroupDescription != nil {
+			securityGroup.GroupDescription = *request.GroupDescription
+		}
+		if request.InboundRules != nil {
+			securityGroup.InboundRules = request.InboundRules
+		}
+		if request.OutboundRules != nil {
+			securityGroup.OutboundRules = request.OutboundRules
+		}
 
 		if res := tx.
 			Clauses(clause.Returning{Columns: []clause.Column{{Name: "revision"}}}).
