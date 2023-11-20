@@ -15,6 +15,7 @@ func createSecurityGroupCommand() *cli.Command {
 			{
 				Name:  "list",
 				Usage: "List all security groups",
+				Flags: commonFlags,
 				Action: func(ctx *cli.Context) error {
 					return listSecurityGroups(ctx)
 				},
@@ -22,12 +23,12 @@ func createSecurityGroupCommand() *cli.Command {
 			{
 				Name:  "delete",
 				Usage: "Delete a security group",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "security-group-id",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					encodeOut := ctx.String("output")
 					sgID, err := getUUID(ctx, "security-group-id")
@@ -41,7 +42,7 @@ func createSecurityGroupCommand() *cli.Command {
 			{
 				Name:  "create",
 				Usage: "create a security group",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "vpc-id",
 						Required: false,
@@ -58,7 +59,7 @@ func createSecurityGroupCommand() *cli.Command {
 						Name:     "outbound-rules",
 						Required: false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					description := ctx.String("description")
 					vpcId, err := getUUID(ctx, "vpc-id")
@@ -90,7 +91,7 @@ func createSecurityGroupCommand() *cli.Command {
 			{
 				Name:  "update",
 				Usage: "update a security group",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "security-group-id",
 						Required: true,
@@ -107,7 +108,7 @@ func createSecurityGroupCommand() *cli.Command {
 						Name:     "outbound-rules",
 						Required: false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 
 					update := public.ModelsUpdateSecurityGroup{}

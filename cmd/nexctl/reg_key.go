@@ -13,6 +13,7 @@ func createRegKeyCommand() *cli.Command {
 			{
 				Name:  "list",
 				Usage: "List registration keys",
+				Flags: commonFlags,
 				Action: func(ctx *cli.Context) error {
 					return listRegKeys(ctx)
 				},
@@ -20,7 +21,7 @@ func createRegKeyCommand() *cli.Command {
 			{
 				Name:  "create",
 				Usage: "Create a registration key",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "vpc-id",
 						Required: false,
@@ -41,7 +42,7 @@ func createRegKeyCommand() *cli.Command {
 						Name:     "expiration",
 						Required: false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					return createRegKey(ctx, public.ModelsAddRegKey{
 						VpcId:           ctx.String("vpc-id"),
@@ -55,7 +56,7 @@ func createRegKeyCommand() *cli.Command {
 			{
 				Name:  "update",
 				Usage: "Update a registration key",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "reg-key-id",
 						Required: true,
@@ -72,7 +73,7 @@ func createRegKeyCommand() *cli.Command {
 						Name:     "expiration",
 						Required: false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					return updateRegKey(ctx, ctx.String("reg-key-id"), public.ModelsUpdateRegKey{
 						Description:     ctx.String("description"),
@@ -84,12 +85,12 @@ func createRegKeyCommand() *cli.Command {
 			{
 				Name:  "delete",
 				Usage: "Delete a registration key",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "reg-key-id",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					id, err := getUUID(ctx, "reg-key-id")
 					if err != nil {

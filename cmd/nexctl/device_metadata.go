@@ -12,7 +12,7 @@ func init() {
 		{
 			Name:  "get",
 			Usage: "Get device metadata",
-			Flags: []cli.Flag{
+			Flags: append(commonFlags,
 				&cli.StringFlag{
 					Name:     "vpc-id",
 					Required: true,
@@ -23,7 +23,7 @@ func init() {
 					Usage:   "display the full set of metadata details",
 					Value:   false,
 				},
-			},
+			),
 			Action: func(c *cli.Context) error {
 				orgId, err := getUUID(c, "vpc-id")
 				if err != nil {
@@ -37,7 +37,7 @@ func init() {
 		{
 			Name:  "get",
 			Usage: "Get device metadata",
-			Flags: []cli.Flag{
+			Flags: append(commonFlags,
 				&cli.StringFlag{
 					Name:     "device-id",
 					Usage:    "Device ID",
@@ -54,7 +54,7 @@ func init() {
 					Usage:   "display the full set of metadata details",
 					Value:   false,
 				},
-			},
+			),
 			Action: func(ctx *cli.Context) error {
 				deviceID, err := getUUID(ctx, "device-id")
 				if err != nil {
@@ -71,7 +71,7 @@ func init() {
 		{
 			Name:  "set",
 			Usage: "Set device metadata",
-			Flags: []cli.Flag{
+			Flags: append(commonFlags,
 				&cli.StringFlag{
 					Name:     "device-id",
 					Usage:    "Device ID",
@@ -93,7 +93,7 @@ func init() {
 					Usage:   "display the full set of metadata details",
 					Value:   false,
 				},
-			},
+			),
 			Action: func(ctx *cli.Context) error {
 				deviceID, err := getUUID(ctx, "device-id")
 				if err != nil {
@@ -109,7 +109,7 @@ func init() {
 		{
 			Name:  "delete",
 			Usage: "Delete device metadata",
-			Flags: []cli.Flag{
+			Flags: append(commonFlags,
 				&cli.StringFlag{
 					Name:     "device-id",
 					Usage:    "Device ID",
@@ -120,7 +120,7 @@ func init() {
 					Usage:    "Metadata Key",
 					Required: true,
 				},
-			},
+			),
 			Action: func(ctx *cli.Context) error {
 				deviceID, err := getUUID(ctx, "device-id")
 				if err != nil {
@@ -132,13 +132,13 @@ func init() {
 		{
 			Name:  "clear",
 			Usage: "Clear all device metadata",
-			Flags: []cli.Flag{
+			Flags: append(commonFlags,
 				&cli.StringFlag{
 					Name:     "device-id",
 					Usage:    "Device ID",
 					Required: true,
 				},
-			},
+			),
 			Action: func(ctx *cli.Context) error {
 				deviceID, err := getUUID(ctx, "device-id")
 				if err != nil {

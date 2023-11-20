@@ -36,57 +36,72 @@ var Version = "dev"
 var DefaultServiceURL = "https://try.nexodus.io"
 
 var additionalPlatformCommands []*cli.Command = nil
+var commonFlags []cli.Flag
+
+func init() {
+	globalCategory := "GLOBAL OPTIONS"
+	commonFlags = []cli.Flag{
+		&cli.BoolFlag{
+			Name:     "debug",
+			Value:    false,
+			Usage:    "Enable debug logging",
+			EnvVars:  []string{"NEXCTL_DEBUG"},
+			Category: globalCategory,
+		},
+		&cli.StringFlag{
+			Name:     "host",
+			Value:    DefaultServiceURL,
+			Usage:    "Api server URL",
+			Hidden:   true,
+			Category: globalCategory,
+		},
+		&cli.StringFlag{
+			Name:     "service-url",
+			Value:    DefaultServiceURL,
+			Usage:    "Api server URL",
+			Category: globalCategory,
+		},
+		&cli.StringFlag{
+			Name:     "username",
+			Usage:    "Username",
+			Category: globalCategory,
+		},
+		&cli.StringFlag{
+			Name:     "password",
+			Usage:    "Password",
+			Category: globalCategory,
+		},
+		&cli.StringFlag{
+			Name:     "output",
+			Value:    encodeColumn,
+			Required: false,
+			Usage:    "Output format: json, json-raw, no-header, column (default columns)",
+			Category: globalCategory,
+		},
+		&cli.BoolFlag{
+			Name:     "insecure-skip-tls-verify",
+			Value:    false,
+			Usage:    "If true, server certificates will not be checked for validity. This will make your HTTPS connections insecure",
+			Required: false,
+			Category: globalCategory,
+		},
+	}
+}
 
 func main() {
 	// Override usage to capitalize "Show"
 	cli.HelpFlag.(*cli.BoolFlag).Usage = "Show help"
+
 	app := &cli.App{
 		Name:                 "nexctl",
 		Usage:                "controls the Nexodus control and data planes",
 		EnableBashCompletion: true,
-		Flags: []cli.Flag{
-			&cli.BoolFlag{
-				Name:    "debug",
-				Value:   false,
-				Usage:   "Enable debug logging",
-				EnvVars: []string{"NEXCTL_DEBUG"},
-			},
-			&cli.StringFlag{
-				Name:   "host",
-				Value:  DefaultServiceURL,
-				Usage:  "Api server URL",
-				Hidden: true,
-			},
-			&cli.StringFlag{
-				Name:  "service-url",
-				Value: DefaultServiceURL,
-				Usage: "Api server URL",
-			},
-			&cli.StringFlag{
-				Name:  "username",
-				Usage: "Username",
-			},
-			&cli.StringFlag{
-				Name:  "password",
-				Usage: "Password",
-			},
-			&cli.StringFlag{
-				Name:     "output",
-				Value:    encodeColumn,
-				Required: false,
-				Usage:    "Output format: json, json-raw, no-header, column (default columns)",
-			},
-			&cli.BoolFlag{
-				Name:     "insecure-skip-tls-verify",
-				Value:    false,
-				Usage:    "If true, server certificates will not be checked for validity. This will make your HTTPS connections insecure",
-				Required: false,
-			},
-		},
+		Flags:                commonFlags,
 		Commands: []*cli.Command{
 			{
 				Name:  "version",
 				Usage: "Get the version of nexctl",
+				Flags: commonFlags,
 				Action: func(cCtx *cli.Context) error {
 					fmt.Printf("version: %s\n", Version)
 					return nil

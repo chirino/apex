@@ -14,6 +14,7 @@ func createVpcCommand() *cli.Command {
 			{
 				Name:  "list",
 				Usage: "List vpcs",
+				Flags: commonFlags,
 				Action: func(ctx *cli.Context) error {
 					return listVPCs(ctx)
 				},
@@ -21,7 +22,7 @@ func createVpcCommand() *cli.Command {
 			{
 				Name:  "create",
 				Usage: "Create a vpcs",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "organization-id",
 						Required: false,
@@ -38,7 +39,7 @@ func createVpcCommand() *cli.Command {
 						Name:     "ipv6-cidr",
 						Required: false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					return createVPC(ctx, public.ModelsAddVPC{
 						Ipv4Cidr:       ctx.String("ipv4-cidr"),
@@ -52,7 +53,7 @@ func createVpcCommand() *cli.Command {
 			{
 				Name:  "update",
 				Usage: "Update a vpc",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "vpc-id",
 						Required: true,
@@ -61,7 +62,7 @@ func createVpcCommand() *cli.Command {
 						Name:     "description",
 						Required: false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					id, err := getUUID(ctx, "vpc-id")
 					if err != nil {
@@ -77,12 +78,12 @@ func createVpcCommand() *cli.Command {
 			{
 				Name:  "delete",
 				Usage: "Delete a vpc",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "vpc-id",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					vpcID, err := getUUID(ctx, "vpc-id")
 					if err != nil {
@@ -95,6 +96,7 @@ func createVpcCommand() *cli.Command {
 				Name:        "metadata",
 				Usage:       "Commands relating to device metadata across the vpc",
 				Subcommands: vpcMetadataSubcommands,
+				Flags:       commonFlags,
 			},
 		},
 	}

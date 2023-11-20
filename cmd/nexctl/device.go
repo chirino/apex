@@ -18,7 +18,7 @@ func createDeviceCommand() *cli.Command {
 			{
 				Name:  "list",
 				Usage: "List all devices",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "vpc-id",
 						Value:    "",
@@ -30,7 +30,7 @@ func createDeviceCommand() *cli.Command {
 						Usage:   "display the full set of device details",
 						Value:   false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					vpcId, err := getUUID(ctx, "vpc-id")
 					if err != nil {
@@ -45,12 +45,12 @@ func createDeviceCommand() *cli.Command {
 			{
 				Name:  "delete",
 				Usage: "Delete a device",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "device-id",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					devID, err := getUUID(ctx, "device-id")
 					if err != nil {
@@ -62,7 +62,7 @@ func createDeviceCommand() *cli.Command {
 			{
 				Name:  "update",
 				Usage: "Update a device",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "device-id",
 						Required: true,
@@ -75,7 +75,7 @@ func createDeviceCommand() *cli.Command {
 						Name:     "hostname",
 						Required: false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 
 					devID, err := getUUID(ctx, "device-id")

@@ -30,11 +30,13 @@ func init() {
 			{
 				Name:   "version",
 				Usage:  "Display the nexd version",
+				Flags:  commonFlags,
 				Action: cmdLocalVersion,
 			},
 			{
 				Name:   "status",
 				Usage:  "Display the nexd status",
+				Flags:  commonFlags,
 				Action: cmdLocalStatus,
 			},
 			{
@@ -74,6 +76,7 @@ func init() {
 					{
 						Name:  "debug",
 						Usage: "Get the debug logging status",
+						Flags: commonFlags,
 						Action: func(cCtx *cli.Context) error {
 							if err := checkVersion(); err != nil {
 								return err
@@ -100,6 +103,7 @@ func init() {
 							{
 								Name:  "on",
 								Usage: "Turn debug logging on",
+								Flags: commonFlags,
 								Action: func(cCtx *cli.Context) error {
 									if err := checkVersion(); err != nil {
 										return err
@@ -116,6 +120,7 @@ func init() {
 							{
 								Name:  "off",
 								Usage: "Turn debug logging off",
+								Flags: commonFlags,
 								Action: func(cCtx *cli.Context) error {
 									if err := checkVersion(); err != nil {
 										return err
@@ -140,6 +145,7 @@ func init() {
 					{
 						Name:  "list",
 						Usage: "List the nexd proxy rules",
+						Flags: commonFlags,
 						Action: func(cCtx *cli.Context) error {
 							if err := checkVersion(); err != nil {
 								return err
@@ -216,6 +222,7 @@ func init() {
 					{
 						Name:  "ping",
 						Usage: "run a test to check the nexd IPv4 peer connectivity (host firewalls or security groups may block the ICMP probes)",
+						Flags: commonFlags,
 						Action: func(cCtx *cli.Context) error {
 							return cmdConnStatus(cCtx, v4)
 						},
@@ -223,6 +230,7 @@ func init() {
 					{
 						Name:  "ping6",
 						Usage: "run a test to check the nexd IPv6 peer connectivity (host firewalls or security groups may block the ICMP probes)",
+						Flags: commonFlags,
 						Action: func(cCtx *cli.Context) error {
 							return cmdConnStatus(cCtx, v6)
 						},
@@ -236,6 +244,7 @@ func init() {
 					{
 						Name:  "list",
 						Usage: "list exit nodes",
+						Flags: commonFlags,
 						Action: func(cCtx *cli.Context) error {
 							encodeOut := cCtx.String("output")
 							return listExitNodes(cCtx, encodeOut)
@@ -244,6 +253,7 @@ func init() {
 					{
 						Name:  "enable",
 						Usage: "Enable the device to use an exit node in the current organization. Warning: this will funnel all traffic through the exit node if one exists and will likely cause your device to be unreachable outside of the nexodus peer network.",
+						Flags: commonFlags,
 						Action: func(cCtx *cli.Context) error {
 							return enableExitNodeClient(cCtx)
 						},

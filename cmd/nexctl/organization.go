@@ -13,6 +13,7 @@ func createOrganizationCommand() *cli.Command {
 			{
 				Name:  "list",
 				Usage: "List organizations",
+				Flags: commonFlags,
 				Action: func(ctx *cli.Context) error {
 					return listOrganizations(ctx)
 				},
@@ -20,7 +21,7 @@ func createOrganizationCommand() *cli.Command {
 			{
 				Name:  "create",
 				Usage: "Create a organizations",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "name",
 						Required: true,
@@ -29,7 +30,7 @@ func createOrganizationCommand() *cli.Command {
 						Name:     "description",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					name := ctx.String("name")
 					description := ctx.String("description")
@@ -39,12 +40,12 @@ func createOrganizationCommand() *cli.Command {
 			{
 				Name:  "delete",
 				Usage: "Delete a organization",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "organization-id",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					organizationID, err := getUUID(ctx, "organization-id")
 					if err != nil {

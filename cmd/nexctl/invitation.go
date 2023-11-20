@@ -14,6 +14,7 @@ func createInvitationCommand() *cli.Command {
 			{
 				Name:  "list",
 				Usage: "List invitations",
+				Flags: commonFlags,
 				Action: func(ctx *cli.Context) error {
 					return listInvitations(ctx)
 				},
@@ -21,7 +22,7 @@ func createInvitationCommand() *cli.Command {
 			{
 				Name:  "create",
 				Usage: "create an invitation",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "user-id",
 						Required: false,
@@ -34,7 +35,7 @@ func createInvitationCommand() *cli.Command {
 						Name:     "organization-id",
 						Required: false,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					organizationId, err := getUUID(ctx, "organization-id")
 					if err != nil {
@@ -54,12 +55,12 @@ func createInvitationCommand() *cli.Command {
 			{
 				Name:  "delete",
 				Usage: "delete an invitation",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "inv-id",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					id, err := getUUID(ctx, "inv-id")
 					if err != nil {
@@ -71,12 +72,12 @@ func createInvitationCommand() *cli.Command {
 			{
 				Name:  "accept",
 				Usage: "accept an invitation",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "inv-id",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					id, err := getUUID(ctx, "inv-id")
 					if err != nil {

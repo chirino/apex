@@ -13,6 +13,7 @@ func createUserSubCommand() *cli.Command {
 			{
 				Name:  "list",
 				Usage: "List all users",
+				Flags: commonFlags,
 				Action: func(ctx *cli.Context) error {
 					return listUsers(ctx)
 				},
@@ -20,6 +21,7 @@ func createUserSubCommand() *cli.Command {
 			{
 				Name:  "get-current",
 				Usage: "Get current user",
+				Flags: commonFlags,
 				Action: func(ctx *cli.Context) error {
 					return getCurrent(ctx)
 				},
@@ -27,13 +29,13 @@ func createUserSubCommand() *cli.Command {
 			{
 				Name:  "delete",
 				Usage: "Delete a user",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "user-id",
 						Required: true,
 						Hidden:   true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					userID, err := getUUID(ctx, "user-id")
 					if err != nil {
@@ -45,7 +47,7 @@ func createUserSubCommand() *cli.Command {
 			{
 				Name:  "remove-user",
 				Usage: "Remove a user from an organization",
-				Flags: []cli.Flag{
+				Flags: append(commonFlags,
 					&cli.StringFlag{
 						Name:     "user-id",
 						Required: true,
@@ -54,7 +56,7 @@ func createUserSubCommand() *cli.Command {
 						Name:     "organization-id",
 						Required: true,
 					},
-				},
+				),
 				Action: func(ctx *cli.Context) error {
 					userID, err := getUUID(ctx, "user-id")
 					if err != nil {
