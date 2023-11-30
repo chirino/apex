@@ -19,7 +19,8 @@ resources:
   - deployment.yaml
   - ingress-api.yaml
   - ingress-frontend.yaml
-  - service.yaml
+  - service-admin.yaml
+  - service-web.yaml
   - certificate-api.yaml
   - certificate-frontend.yaml
 labels:
